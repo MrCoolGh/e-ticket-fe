@@ -1,0 +1,37 @@
+import { AppShell, Burger, Group, Image, Text, Button } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
+import logo from '../assets/img/logo.png';
+
+export function Header() {
+  const [opened, { toggle }] = useDisclosure();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const showGoBackButton = location.pathname !== '/';
+
+  return (
+    <AppShell.Header>
+      <Group h="100%" px="md" justify="space-between">
+        <Group>
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+          <Group gap="xs" align="center">
+            <Image src={logo} h={40} w="auto" alt="House of Joy 25" />
+            <Text size="lg" fw={500}>
+              House of Joy 25'
+            </Text>
+          </Group>
+        </Group>
+
+        {showGoBackButton && (
+          <Button
+            variant="subtle"
+            color="gray"
+            onClick={() => navigate(-1)}
+          >
+            Go Back To Previous Page
+          </Button>
+        )}
+      </Group>
+    </AppShell.Header>
+  );
+} 
