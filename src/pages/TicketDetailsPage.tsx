@@ -25,8 +25,10 @@ import {
   IconLocation,
   IconUser,
   IconInfoCircle,
-  IconBrandWhatsapp,
   IconDownload,
+  IconSchool,
+  IconBook,
+  IconId,
 } from '@tabler/icons-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useState } from 'react';
@@ -58,8 +60,8 @@ export function TicketDetailsPage() {
   useEffect(() => {
     if (ticketCode) {
       getTicketByCode(ticketCode)
-        .then((data) => {
-          setTicket(data);
+        .then((response) => {
+          setTicket(response.data);
           setLoading(false);
         })
         .catch(() => {
@@ -87,14 +89,25 @@ export function TicketDetailsPage() {
     return <Center h={400}><Text>Ticket not found.</Text></Center>;
   }
 
-  const handleDownload = () => {
-    window.open(`${api.defaults.baseURL}/tickets/code/${ticketCode}/download`, '_blank');
-  };
-
-  const handleWhatsAppShare = () => {
-    const message = `Check out my ticket for House of Joy 25'! You can view it here: ${window.location.href}`;
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(`${api.defaults.baseURL}/tickets/code/${ticketCode}/download`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `HOJ25_Ticket_${ticketCode}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        console.error('Download failed');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+    }
   };
 
   const ticketId = ticket.ticketCode.split('-').pop();
@@ -134,6 +147,30 @@ export function TicketDetailsPage() {
                 <Badge color="red" size="lg">{ticket.ticketType}</Badge>
               </Paper>
             </Group>
+
+            {/* Student Information - Only show for student tickets */}
+            {ticket.ticketType === 'STUDENT' && (
+              <Paper withBorder p="lg" radius="md">
+                <Text fw={500} mb="md">Student Information</Text>
+                <Stack gap="md">
+                  {ticket.institutionName && (
+                    <DetailItem icon={<IconSchool size={20} />} title="Institution">
+                      {ticket.institutionName}
+                    </DetailItem>
+                  )}
+                  {ticket.courseOfStudy && (
+                    <DetailItem icon={<IconBook size={20} />} title="Course of Study">
+                      {ticket.courseOfStudy}
+                    </DetailItem>
+                  )}
+                  {ticket.studentIdNumber && (
+                    <DetailItem icon={<IconId size={20} />} title="Student ID Number">
+                      {ticket.studentIdNumber}
+                    </DetailItem>
+                  )}
+                </Stack>
+              </Paper>
+            )}
 
             <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="xl">
               {/* QR Code */}
@@ -184,22 +221,15 @@ export function TicketDetailsPage() {
             <Divider my="sm" label={`Generated on: ${new Date(ticket.createdAt).toLocaleDateString()}`} labelPosition="center" />
           </Stack>
         </Paper>
-        <SimpleGrid cols={{ base: 1, xs: 2 }} mt="lg">
-          <Button
-            color="red"
-            leftSection={<IconBrandWhatsapp size={20} />}
-            onClick={handleWhatsAppShare}
-          >
-            Send Ticket to My WhatsApp
-          </Button>
-          <Button
-            color="dark"
-            leftSection={<IconDownload size={20} />}
-            onClick={handleDownload}
-          >
-            Save to Device
-          </Button>
-        </SimpleGrid>
+        <Button
+          color="dark"
+          leftSection={<IconDownload size={20} />}
+          onClick={handleDownload}
+          fullWidth
+          mt="lg"
+        >
+          Save to Device
+        </Button>
       </Container>
     </Box>
   );

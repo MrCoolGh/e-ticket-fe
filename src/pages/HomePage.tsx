@@ -34,24 +34,26 @@ export function HomePage() {
             Ticket Type
             </Title>
             <SimpleGrid cols={1} spacing="xl">
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
-                <Card.Section>
-                <Image
-                    src={studentTicketImg}
-                    alt="Student Ticket"
-                />
-                </Card.Section>
-                <Group justify="space-between" mt="md" align="center">
-                    <Text fz="sm">Special discounted rate for students with valid ID</Text>
-                    <Group align="center" gap={5}>
-                        <ThemeIcon color="green" size={20} radius="xl">
-                            <IconCheck style={{ width: '70%', height: '70%' }} />
-                        </ThemeIcon>
-                        <Text fz="xs" c="dimmed">Student verification required</Text>
+              <Link to="/student-ticket" style={{ textDecoration: 'none' }}>
+                <Card shadow="sm" padding="lg" radius="md" withBorder>
+                    <Card.Section>
+                    <Image
+                        src={studentTicketImg}
+                        alt="Student Ticket"
+                    />
+                    </Card.Section>
+                    <Group justify="space-between" mt="md" align="center">
+                        <Text fz="sm">Special discounted rate for students with valid ID</Text>
+                        <Group align="center" gap={5}>
+                            <ThemeIcon color="green" size={20} radius="xl">
+                                <IconCheck style={{ width: '70%', height: '70%' }} />
+                            </ThemeIcon>
+                            <Text fz="xs" c="dimmed">Student verification required</Text>
+                        </Group>
                     </Group>
-                </Group>
-            </Card>
-            <Link to="/buy-ticket/non-student" style={{ textDecoration: 'none' }}>
+                </Card>
+              </Link>
+              <Link to="/non-student-ticket" style={{ textDecoration: 'none' }}>
                 <Card shadow="sm" padding="lg" radius="md" withBorder>
                     <Card.Section>
                     <Image
@@ -69,7 +71,7 @@ export function HomePage() {
                         </Group>
                     </Group>
                 </Card>
-            </Link>
+              </Link>
             </SimpleGrid>
         </Paper>
       </Container>

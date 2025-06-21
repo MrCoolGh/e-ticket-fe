@@ -47,7 +47,7 @@ export function PaymentStatusPage() {
 
             <Group grow w="100%">
               {isSuccess && ticketCode ? (
-                <Button component={Link} to={`/ticket/${ticketCode}`} size="md">
+                <Button component={Link} to={`/tickets/${ticketCode}`} size="md">
                   View Your Ticket
                 </Button>
               ) : (

@@ -32,12 +32,26 @@ export interface TicketDetailsResponse {
   usedAt?: string;
 }
 
-export const purchaseNonStudentTicket = async (payload: NonStudentTicketPayload) => {
-  const { data } = await api.post<TicketPurchaseResponse>('/tickets/purchase/non-student', payload);
-  return data;
+export const purchaseNonStudentTicket = (data: {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+}) => {
+  return api.post("/tickets/non-student", data);
 };
 
-export const getTicketByCode = async (ticketCode: string) => {
-  const { data } = await api.get<TicketDetailsResponse>(`/tickets/code/${ticketCode}`);
-  return data;
+export const purchaseStudentTicket = (formData: FormData) => {
+    return api.post("/student-tickets/apply", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+}
+
+export const checkStudentStatus = (email: string) => {
+    return api.get(`/student-tickets/status?email=${email}`);
+};
+
+export const getTicketByCode = (ticketCode: string) => {
+  return api.get(`/tickets/code/${ticketCode}`);
 }; 
